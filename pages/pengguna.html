@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manajemen Pengguna — SMK3 PTPN I Regional 7</title>
+<link rel="icon" type="image/png" href="../assets/img/logo.png">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--green:#2a9d42;--orange:#e07b28;--blue:#2563a0;--bg:#f5f6fa;--card:#ffffff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--accent:#1a3c34;--sidebar-w:250px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.sidebar{position:fixed;left:0;top:0;width:var(--sidebar-w);height:100vh;background:var(--accent);z-index:1050;overflow-y:auto;transition:transform .25s;display:flex;flex-direction:column}
+.sb-logo{padding:20px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-logo img{width:44px;height:44px;object-fit:contain;background:#fff;border-radius:10px;padding:5px}
+.sb-logo .lt{line-height:1.15}.sb-logo .lt .sn{font-size:.72rem;color:rgba(255,255,255,.5)}.sb-logo .lt .rn{font-size:.95rem;color:#fff;font-weight:700}
+.sb-nav{padding:12px 10px;flex:1}
+.sb-nav .nl{font-size:.58rem;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.35);padding:14px 10px 6px}
+.sb-nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;color:rgba(255,255,255,.6);text-decoration:none;border-radius:8px;font-size:.82rem;transition:.15s}
+.sb-nav a:hover,.sb-nav a.active{background:rgba(255,255,255,.1);color:#fff}
+.sb-nav a i{width:18px;text-align:center}
+.sb-nav a.logout-link{color:#fca5a5;margin-top:8px}
+.main{margin-left:var(--sidebar-w);min-height:100vh;transition:margin .25s}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.btn-menu{display:none;background:none;border:none;color:var(--text);font-size:1.3rem;cursor:pointer;padding:6px}
+.tb-title{font-weight:600;font-size:.9rem}
+.tb-right{display:flex;align-items:center;gap:12px;position:relative}
+.tb-right .notif-bell{position:relative;cursor:pointer;font-size:1.1rem;color:var(--muted);padding:4px;transition:.15s}
+.tb-right .notif-bell:hover{color:var(--accent)}
+.tb-right .notif-bell .badge-count{position:absolute;top:-4px;right:-6px;background:#dc2626;color:#fff;font-size:.55rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.notif-dropdown{display:none;position:absolute;top:100%;right:0;width:320px;max-height:400px;overflow-y:auto;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:1100;margin-top:8px}
+.notif-dropdown.show{display:block}
+.notif-dropdown .notif-header{font-weight:700;font-size:.78rem;padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.notif-dropdown .notif-item{padding:10px 16px;border-bottom:1px solid var(--border);font-size:.75rem;cursor:pointer;transition:.1s;display:flex;align-items:flex-start;gap:8px}
+.notif-dropdown .notif-item:hover{background:var(--bg)}
+.notif-dropdown .notif-item .ni-icon{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;color:#fff}
+.bg-blue{background:#2563a0}.bg-green{background:#2a9d42}.bg-orange{background:#e07b28}.bg-red{background:#dc2626}.bg-teal{background:#0d9488}.bg-purple{background:#7c3aed}
+.notif-dropdown .notif-item .ni-time{font-size:.65rem;color:var(--muted);margin-top:2px}
+.notif-dropdown .notif-empty{padding:30px;text-align:center;color:var(--muted);font-size:.78rem}
+.tb-avatar{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;overflow:hidden}
+.tb-avatar img{width:100%;height:100%;object-fit:cover}
+.content{padding:24px}
+.page-header{margin-bottom:20px}.page-header h4{font-size:1.2rem;font-weight:700;margin:0 0 2px}.page-header p{font-size:.78rem;color:var(--muted)}
+.card-box{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:16px}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.card-body{padding:20px;overflow-x:auto}
+.btn-acc{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.8rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-acc:hover{background:#1f4f43;color:#fff}
+.btn-sec{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:.8rem;font-weight:500;cursor:pointer}
+.btn-export{background:#16a34a;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.8rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-export:hover{background:#15803d;color:#fff}
+.search-input{background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:8px;padding:9px 14px;font-size:.82rem;min-width:200px;outline:none}
+.search-input:focus{border-color:var(--accent)}
+.table{width:100%;border-collapse:collapse;min-width:650px}
+.table th{background:var(--bg);color:var(--text);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.03em;padding:11px 12px;border-bottom:2px solid var(--border);white-space:nowrap}
+.table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:.8rem;vertical-align:middle}
+.table tbody tr:hover{background:#f8fafc}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.65rem;font-weight:600}
+.badge-green{background:#dcfce7;color:#166534}.badge-red{background:#fee2e2;color:#991b1b}
+.badge-blue{background:#dbeafe;color:#1e40af}.badge-slate{background:#f1f5f9;color:#475569}
+.badge-purple{background:#ede9fe;color:#6b21a8}.badge-amber{background:#fef3c7;color:#92400e}.badge-teal{background:#ccfbf1;color:#0f766e}
+.btn-act{width:30px;height:30px;border-radius:7px;border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:.7rem;margin:0 2px;transition:.15s}
+.btn-edit{background:#dbeafe;color:#1e40af}.btn-edit:hover{background:#1e40af;color:#fff}
+.btn-del{background:#fee2e2;color:#991b1b}.btn-del:hover{background:#dc2626;color:#fff}
+.empty-box{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-box i{font-size:2.5rem;color:#cbd5e1;margin-bottom:12px;display:block}
+.modal-content{background:var(--card);border:1px solid var(--border);border-radius:16px;color:var(--text)}
+.modal-header{border-bottom:1px solid var(--border);padding:16px 20px}.modal-footer{border-top:1px solid var(--border);padding:14px 20px}
+.modal-title{font-weight:700;font-size:.95rem;color:var(--accent)}
+.form-label{font-size:.78rem;font-weight:600;margin-bottom:4px}
+.form-control,.form-select{background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:8px;font-size:.84rem;padding:10px 14px}
+.form-control:focus,.form-select:focus{background:var(--bg);border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,60,52,.06)}
+.form-select option{background:var(--card);color:var(--text)}
+.text-hint{font-size:.72rem;color:var(--muted)}
+.foto-preview-mini{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+.foto-upload-area{width:90px;height:90px;border-radius:50%;background:var(--bg);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;transition:.2s}
+.foto-upload-area:hover{border-color:var(--accent)}
+.foto-upload-area img{width:100%;height:100%;object-fit:cover}
+.foto-upload-area .foto-placeholder{font-size:1.5rem;color:var(--muted)}
+.foto-upload-area .foto-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.65rem;opacity:0;transition:.2s;border-radius:50%}
+.foto-upload-area:hover .foto-overlay{opacity:1}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1040}.overlay.show{display:block}
+@media(max-width:992px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.btn-menu{display:block}}
+@media(max-width:768px){.content{padding:12px}.topbar{padding:10px 14px}.tb-title{font-size:.8rem}.card-body{padding:14px}.card-header{flex-direction:column}.card-header .btn-acc,.card-header .btn-export{width:100%;justify-content:center}.search-input{min-width:100%}}
+</style>
+</head>
+<body>
+<div class="overlay" id="overlay"></div>
+<aside class="sidebar" id="sidebar">
+<div class="sb-logo"><img src="../assets/img/logo.png" alt="PTPN I"><div class="lt"><div class="sn">ptpn1</div><div class="rn">Regional 7</div></div></div>
+<nav class="sb-nav">
+<div class="nl">Menu Utama</div>
+<a href="../dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+<a href="karyawan.html"><i class="fas fa-users"></i> Data Karyawan</a>
+<a href="lokasi.html"><i class="fas fa-map-marker-alt"></i> Data Lokasi</a>
+<a href="risiko.html"><i class="fas fa-exclamation-triangle"></i> Data Risiko</a>
+<div class="nl">Laporan</div>
+<a href="kejadian.html"><i class="fas fa-file-alt"></i> Laporan Kejadian</a>
+<a href="inspeksi.html"><i class="fas fa-clipboard-check"></i> Inspeksi K3</a>
+<a href="tindakan.html"><i class="fas fa-tools"></i> Tindakan Perbaikan</a>
+<div class="nl">Lainnya</div>
+<a href="statistik.html"><i class="fas fa-chart-bar"></i> Statistik</a>
+<a href="pengguna.html" class="active"><i class="fas fa-user-cog"></i> Manajemen Pengguna</a>
+<a href="pengaturan.html"><i class="fas fa-cog"></i> Pengaturan</a>
+<a href="#" class="logout-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+</nav>
+</aside>
+<main class="main">
+<header class="topbar">
+<div style="display:flex;align-items:center;gap:10px"><button class="btn-menu" id="btnMenu"><i class="fas fa-bars"></i></button><span class="tb-title">Manajemen Pengguna</span></div>
+<div class="tb-right">
+    <div class="notif-bell" id="notifBell"><i class="fas fa-bell"></i><span class="badge-count d-none" id="notifBadge">0</span></div>
+    <div class="notif-dropdown" id="notifDropdown"><div class="notif-header"><span>Notifikasi</span><small style="color:var(--accent);cursor:pointer" onclick="markAllRead()">Tandai semua dibaca</small></div><div id="notifList"><div class="notif-empty">Belum ada notifikasi</div></div></div>
+    <span style="font-size:.78rem;color:var(--muted)" id="tbRole"></span>
+    <div class="tb-avatar" id="tbAvatar">U</div>
+</div>
+</header>
+<div class="content">
+<div class="page-header"><h4><i class="fas fa-user-cog me-2"></i>Manajemen Pengguna</h4><p>Kelola akun & hak akses pengguna SMK3 — hanya Super Admin & Admin Kebun</p></div>
+<div class="card-box">
+<div class="card-header">
+<div style="display:flex;gap:8px"><button class="btn-acc" onclick="openAddModal()"><i class="fas fa-plus me-1"></i> Tambah Pengguna</button><button class="btn-export" onclick="exportToExcel()"><i class="fas fa-file-excel me-1"></i> Export</button></div>
+<input type="text" class="search-input" id="searchInput" placeholder="Cari pengguna...">
+</div>
+<div class="card-body"><div style="overflow-x:auto"><table class="table"><thead><tr><th>#</th><th>Foto</th><th>Nama</th><th>Email</th><th>Role</th><th>Bagian</th><th>Status</th><th>Dibuat</th><th>Aksi</th></tr></thead><tbody id="tableBody"></tbody></table></div><div class="empty-box d-none" id="emptyBox"><i class="fas fa-users"></i><h6>Belum Ada Pengguna</h6></div></div>
+</div></div>
+</main>
+
+<!-- MODAL TAMBAH/EDIT -->
+<div class="modal fade" id="userModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+<div class="modal-header"><h5 class="modal-title" id="modalTitle"><i class="fas fa-user-plus me-1"></i> Tambah Pengguna</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+<form id="userForm"><div class="modal-body"><input type="hidden" id="editUserId">
+<div class="mb-3 text-center">
+    <div class="foto-upload-area mx-auto" id="fotoUploadArea" onclick="document.getElementById('fotoFileInput').click()">
+        <img id="fotoPreviewImg" src="" style="display:none" alt="">
+        <span id="fotoPlaceholder" class="foto-placeholder"><i class="fas fa-camera"></i></span>
+        <div class="foto-overlay"><i class="fas fa-camera me-1"></i> Pilih</div>
+    </div>
+    <input type="file" id="fotoFileInput" accept="image/*" style="display:none" onchange="handleFotoSelect(this)">
+    <small class="text-hint mt-1 d-block">Klik untuk upload foto (maks 2MB)</small>
+</div>
+<div class="mb-3"><label class="form-label">Nama Lengkap <span class="text-danger">*</span></label><input type="text" class="form-control" id="f_nama" required></div>
+<div class="mb-3"><label class="form-label">Email <span class="text-danger">*</span></label><input type="email" class="form-control" id="f_email" required></div>
+<div class="mb-3"><label class="form-label">Password <span class="text-danger" id="pwStar">*</span></label><input type="password" class="form-control" id="f_password"><small class="text-hint" id="pwHint">Minimal 6 karakter</small></div>
+<div class="mb-3"><label class="form-label">Role <span class="text-danger">*</span></label><select class="form-select" id="f_role" required><option value="super_admin">Super Admin</option><option value="admin_kebun">Admin Kebun</option><option value="supervisor_k3">Supervisor K3</option><option value="petugas_k3">Petugas K3</option><option value="operator">Operator</option><option value="viewer">Viewer (Read-Only)</option></select><small class="text-hint">Tentukan hak akses pengguna</small></div>
+<div class="mb-3"><label class="form-label">Bagian / Unit Kerja</label><input type="text" class="form-control" id="f_bagian" placeholder="Contoh: Bagian Pengolahan, Bengkel, dll"></div>
+<div class="mb-3"><label class="form-label">Status <span class="text-danger">*</span></label><select class="form-select" id="f_status" required><option value="Aktif">Aktif</option><option value="Nonaktif">Nonaktif</option></select></div>
+</div>
+<div class="modal-footer"><button type="button" class="btn-sec" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn-acc"><i class="fas fa-save me-1"></i> Simpan</button></div></form>
+</div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../supabase/config.js"></script>
+<script src="../assets/js/seed-data.js"></script>
+<script src="../assets/js/notif.js"></script>
+<script src="../assets/js/supabase.js"></script>
+<script>
+var currentUser=null;try{currentUser=JSON.parse(localStorage.getItem('smk3_currentUser'))}catch(e){}
+if(!currentUser){window.location.href='../login.html'}
+
+// === ROLE YANG BISA AKSES ===
+var EDIT_ROLES=['super_admin','admin_kebun'];
+if(EDIT_ROLES.indexOf(currentUser.role)===-1){
+  Swal.fire({icon:'error',title:'Akses Ditolak',text:'Hanya Super Admin & Admin Kebun yang dapat mengakses halaman ini.',confirmButtonColor:'#1a3c34'}).then(function(){window.location.href='../dashboard.html'})
+}
+
+var ROLE_MAP={super_admin:{c:'badge-purple',t:'Super Admin'},admin_kebun:{c:'badge-blue',t:'Admin Kebun'},supervisor_k3:{c:'badge-teal',t:'Supervisor K3'},petugas_k3:{c:'badge-amber',t:'Petugas K3'},operator:{c:'badge-slate',t:'Operator'},viewer:{c:'badge-slate',t:'Viewer'},admin:{c:'badge-blue',t:'Administrator'},petugas:{c:'badge-slate',t:'Petugas'}};
+var pendingFotoData=null;
+
+// UI Setup
+document.getElementById('btnMenu').onclick=function(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show')}
+document.getElementById('overlay').onclick=function(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+document.querySelectorAll('.sidebar a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')})})
+document.getElementById('tbRole').textContent=ROLE_MAP[currentUser.role]?ROLE_MAP[currentUser.role].t:(currentUser.role||'User');
+updateCurrentAvatar();
+document.getElementById('logoutBtn').addEventListener('click',function(e){e.preventDefault();Swal.fire({title:'Keluar?',text:'Anda akan keluar dari sistem.',icon:'question',showCancelButton:true,confirmButtonColor:'#1a3c34',cancelButtonColor:'#94a3b8',confirmButtonText:'Ya',cancelButtonText:'Batal'}).then(function(r){if(!r.isConfirmed)return;var go=function(){localStorage.removeItem('smk3_currentUser');window.location.href='../login.html'};if(window.dbService&&window.dbService.client){window.dbService.client.auth.signOut().finally(go)}else{go()}})})
+document.getElementById('searchInput').addEventListener('input',function(){var q=this.value.toLowerCase();document.querySelectorAll('#tableBody tr').forEach(function(r){r.style.display=r.textContent.toLowerCase().indexOf(q)!==-1?'':'none'})})
+
+function updateCurrentAvatar(){
+  var av=document.getElementById('tbAvatar');
+  try{currentUser=JSON.parse(localStorage.getItem('smk3_currentUser'))}catch(e){}
+  if(currentUser&&currentUser.foto_url){
+    av.innerHTML='<img src="'+currentUser.foto_url+'" alt="">';av.style.background='none';
+  } else {
+    av.textContent=(currentUser.nama||'U').charAt(0).toUpperCase();av.style.background='var(--accent)';
+  }
+}
+
+function roleBadge(r){var b=ROLE_MAP[r]||ROLE_MAP['petugas'];return'<span class="badge '+b.c+'">'+b.t+'</span>'}
+
+function loadUsers(){
+  var users=dbService.getLocalUsers();
+  var tbody=document.getElementById('tableBody'),empty=document.getElementById('emptyBox');
+  if(!users||users.length===0){tbody.innerHTML='';empty.classList.remove('d-none');return}
+  empty.classList.add('d-none');
+  tbody.innerHTML=users.map(function(u,i){
+    var safeId=u.id.replace(/'/g,"\\'");
+    var fotoHtml=u.foto_url?'<img src="'+u.foto_url+'" class="foto-preview-mini" alt="">':'<div class="foto-preview-mini d-inline-flex align-items-center justify-content-center" style="background:var(--bg);color:var(--muted);font-size:.65rem;font-weight:700">'+(u.nama||'?').charAt(0).toUpperCase()+'</div>';
+    return'<tr><td>'+(i+1)+'</td><td>'+fotoHtml+'</td><td>'+(u.nama||'-')+'</td><td>'+(u.email||'-')+'</td><td>'+roleBadge(u.role)+'</td><td>'+(u.bagian||'-')+'</td><td><span class="badge '+(u.status==='Aktif'?'badge-green':'badge-red')+'">'+(u.status||'Aktif')+'</span></td><td>'+(u.created_at?new Date(u.created_at).toLocaleDateString('id-ID'):'-')+'</td><td><button class="btn-act btn-edit" onclick="editUser(\''+safeId+'\')"><i class="fas fa-edit"></i></button><button class="btn-act btn-del" onclick="delUser(\''+safeId+'\')"><i class="fas fa-trash"></i></button></td></tr>'
+  }).join('')
+}
+
+function resetFotoPreview(){
+  pendingFotoData=null;
+  document.getElementById('fotoPreviewImg').style.display='none';
+  document.getElementById('fotoPlaceholder').style.display='';
+}
+
+function handleFotoSelect(input){
+  if(!input.files||!input.files[0]) return;
+  var file=input.files[0];
+  if(file.size>2*1024*1024){Swal.fire({icon:'error',title:'File terlalu besar!',text:'Maksimal 2MB.'});return}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    pendingFotoData=e.target.result;
+    document.getElementById('fotoPreviewImg').src=pendingFotoData;
+    document.getElementById('fotoPreviewImg').style.display='';
+    document.getElementById('fotoPlaceholder').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetForm(){
+  document.getElementById('editUserId').value='';
+  document.getElementById('modalTitle').innerHTML='<i class="fas fa-user-plus me-1"></i> Tambah Pengguna';
+  ['f_nama','f_email','f_password','f_bagian'].forEach(function(id){document.getElementById(id).value=''});
+  document.getElementById('f_password').required=true;
+  document.getElementById('pwStar').style.display='';
+  document.getElementById('pwHint').textContent='Minimal 6 karakter';
+  document.getElementById('f_role').value='petugas_k3';
+  document.getElementById('f_status').value='Aktif';
+  resetFotoPreview();
+}
+
+function openAddModal(){
+  resetForm();
+  new bootstrap.Modal(document.getElementById('userModal')).show();
+}
+
+document.getElementById('userForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var btn=this.querySelector('button[type="submit"]');btn.disabled=true;
+  var id=document.getElementById('editUserId').value;
+  var nama=document.getElementById('f_nama').value.trim();
+  var email=document.getElementById('f_email').value.trim();
+  var pw=document.getElementById('f_password').value;
+  var role=document.getElementById('f_role').value;
+  var status=document.getElementById('f_status').value;
+  var bagian=document.getElementById('f_bagian').value.trim();
+
+  if(!id&&!pw){Swal.fire({icon:'error',title:'Password wajib diisi!'});btn.disabled=false;return}
+  if(pw&&pw.length<6){Swal.fire({icon:'error',title:'Password minimal 6 karakter!'});btn.disabled=false;return}
+  if(!id){
+    var allUsers=dbService.getLocalUsers();
+    var dup=allUsers.find(function(u){return u.email.toLowerCase()===email.toLowerCase()});
+    if(dup){Swal.fire({icon:'error',title:'Email sudah terdaftar!'});btn.disabled=false;return}
+  }
+
+  var data={nama:nama,email:email,role:role,status:status,bagian:bagian};
+  if(pw) data.password=pw;
+  if(pendingFotoData) data.foto_url=pendingFotoData;
+
+  var result;
+  if(id){result=dbService.updateLocalUser(id,data)} else {result=dbService.addLocalUser(data)}
+
+  if(result){
+    // Tambah notifikasi
+    window.SMK3_NOTIF.add(
+      id?'Pengguna Diperbarui':'Pengguna Baru Ditambahkan',
+      nama+' ('+email+') '+ (id?'berhasil diperbarui.':'berhasil ditambahkan sebagai '+ROLE_MAP[role].t+'.'),
+      'user','pengguna'
+    );
+    bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+    loadUsers();
+    Swal.fire({icon:'success',title:'Berhasil!',text:'Pengguna "'+nama+'" berhasil disimpan.',showConfirmButton:false,timer:2500})
+  } else {
+    Swal.fire({icon:'error',title:'Gagal',text:'Terjadi kesalahan.'})
+  }
+  btn.disabled=false;
+})
+
+window.editUser=function(id){
+  var users=dbService.getLocalUsers();
+  var u=users.find(function(x){return x.id===id});if(!u)return;
+  document.getElementById('editUserId').value=u.id;
+  document.getElementById('modalTitle').innerHTML='<i class="fas fa-edit me-1"></i> Edit: '+(u.nama||u.email);
+  document.getElementById('f_nama').value=u.nama||'';
+  document.getElementById('f_email').value=u.email||'';
+  document.getElementById('f_password').value='';
+  document.getElementById('f_password').required=false;
+  document.getElementById('pwStar').style.display='none';
+  document.getElementById('pwHint').textContent='Kosongkan jika tidak ingin mengubah password';
+  document.getElementById('f_role').value=u.role||'petugas_k3';
+  document.getElementById('f_bagian').value=u.bagian||'';
+  document.getElementById('f_status').value=u.status||'Aktif';
+  resetFotoPreview();
+  pendingFotoData=null;
+  if(u.foto_url){
+    document.getElementById('fotoPreviewImg').src=u.foto_url;
+    document.getElementById('fotoPreviewImg').style.display='';
+    document.getElementById('fotoPlaceholder').style.display='none';
+  }
+  new bootstrap.Modal(document.getElementById('userModal')).show();
+}
+
+window.delUser=function(id){
+  var users=dbService.getLocalUsers();
+  var u=users.find(function(x){return x.id===id});
+  if(u&&u.email===currentUser.email){Swal.fire({icon:'error',title:'Tidak bisa menghapus akun sendiri!'});return}
+  Swal.fire({title:'Hapus?',text:'Hapus "'+(u?u.nama+' ('+u.email+')':'pengguna')+'" secara permanen?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc2626',cancelButtonColor:'#94a3b8',confirmButtonText:'Ya, Hapus',cancelButtonText:'Batal'}).then(function(r){
+    if(!r.isConfirmed)return;
+    dbService.deleteLocalUser(id);
+    window.SMK3_NOTIF.add('Pengguna Dihapus',(u?u.nama:'Pengguna')+' telah dihapus dari sistem.','warning','pengguna');
+    loadUsers();
+    Swal.fire({icon:'success',title:'Dihapus!',showConfirmButton:false,timer:1500})
+  })
+}
+
+function exportToExcel(){
+  var users=dbService.getLocalUsers();if(!users||users.length===0){Swal.fire({icon:'info',title:'Tidak ada data.'});return}
+  var csv='\uFEFFNama,Email,Role,Bagian,Status,Dibuat\n';
+  users.forEach(function(u){csv+=u.nama+','+u.email+','+u.role+','+(u.bagian||'-')+','+(u.status||'Aktif')+','+(u.created_at?new Date(u.created_at).toLocaleDateString('id-ID'):'-')+'\n'});
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='pengguna_export_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  Swal.fire({icon:'success',title:'Berhasil!',showConfirmButton:false,timer:2000})
+}
+
+loadUsers();
+</script>
+</body>
+</html>

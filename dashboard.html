@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — SMK3 PTPN I Regional 7</title>
+    <link rel="icon" type="image/png" href="assets/img/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root{--green:#2a9d42;--orange:#e07b28;--blue:#2563a0;--bg:#f5f6fa;--card:#ffffff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--accent:#1a3c34;--sidebar-w:250px}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+        .sidebar{position:fixed;left:0;top:0;width:var(--sidebar-w);height:100vh;background:var(--accent);z-index:1050;overflow-y:auto;transition:transform .25s;display:flex;flex-direction:column}
+        .sb-logo{padding:20px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.1)}
+        .sb-logo img{width:44px;height:44px;object-fit:contain;background:#fff;border-radius:10px;padding:5px;flex-shrink:0}
+        .sb-logo .lt{line-height:1.15}
+        .sb-logo .lt .sn{font-size:.72rem;color:rgba(255,255,255,.5);font-weight:500}
+        .sb-logo .lt .rn{font-size:.95rem;color:#fff;font-weight:700}
+        .sb-nav{padding:12px 10px;flex:1}
+        .sb-nav .nl{font-size:.58rem;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.35);padding:14px 10px 6px}
+        .sb-nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;color:rgba(255,255,255,.6);text-decoration:none;border-radius:8px;font-size:.82rem;transition:all .15s}
+        .sb-nav a:hover,.sb-nav a.active{background:rgba(255,255,255,.1);color:#fff}
+        .sb-nav a i{width:18px;text-align:center}
+        .sb-nav a.logout-link{color:#fca5a5;margin-top:8px}
+        .sb-nav a.logout-link:hover{background:rgba(252,165,165,.15)}
+        .main{margin-left:var(--sidebar-w);min-height:100vh;transition:margin .25s}
+        .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:100}
+        .btn-menu{display:none;background:none;border:none;color:var(--text);font-size:1.3rem;cursor:pointer;padding:6px}
+        .tb-title{font-weight:600;font-size:.9rem;color:var(--text)}
+        .tb-right{display:flex;align-items:center;gap:10px;position:relative}
+        .tb-name{font-size:.8rem;color:var(--muted)}
+        .tb-avatar{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;overflow:hidden}
+        .tb-avatar img{width:100%;height:100%;object-fit:cover}
+        .tb-right .notif-bell{position:relative;cursor:pointer;font-size:1.1rem;color:var(--muted);padding:4px;transition:.15s}
+        .tb-right .notif-bell:hover{color:var(--accent)}
+        .tb-right .notif-bell .badge-count{position:absolute;top:-4px;right:-6px;background:#dc2626;color:#fff;font-size:.55rem;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+        .notif-dropdown{display:none;position:absolute;top:100%;right:0;width:320px;max-height:400px;overflow-y:auto;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:1100;margin-top:8px}
+        .notif-dropdown.show{display:block}
+        .notif-dropdown .notif-header{font-weight:700;font-size:.78rem;padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .notif-dropdown .notif-item{padding:10px 16px;border-bottom:1px solid var(--border);font-size:.75rem;cursor:pointer;display:flex;align-items:flex-start;gap:8px}
+        .notif-dropdown .notif-item:hover{background:var(--bg)}
+        .notif-dropdown .notif-item .ni-icon{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;color:#fff}
+        .bg-blue{background:#2563a0}.bg-green{background:#2a9d42}.bg-orange{background:#e07b28}.bg-red{background:#dc2626}.bg-teal{background:#0d9488}.bg-purple{background:#7c3aed}
+        .notif-dropdown .notif-item .ni-time{font-size:.65rem;color:var(--muted);margin-top:2px}
+        .notif-dropdown .notif-empty{padding:30px;text-align:center;color:var(--muted);font-size:.78rem}
+        .content{padding:24px}
+        .welcome{background:linear-gradient(135deg,#f0f9f4 0%,#f8fafc 100%);border:1px solid #d1e8d9;border-radius:14px;padding:20px 24px;margin-bottom:24px}
+        .welcome h5{font-weight:700;font-size:1.05rem;color:var(--accent);margin:0 0 4px}
+        .welcome p{font-size:.8rem;color:var(--muted);margin:0}
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+        .stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 16px;transition:box-shadow .2s,transform .2s}
+        .stat-box:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-2px)}
+        .stat-box .si{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-bottom:10px}
+        .si.c1{background:#dbeafe;color:var(--blue)}.si.c2{background:#ffedd5;color:var(--orange)}.si.c3{background:#fee2e2;color:#dc2626}.si.c4{background:#dcfce7;color:var(--green)}.si.c5{background:#fef3c7;color:#d97706}.si.c6{background:#e0f2fe;color:#0284c7}
+        .stat-box h3{font-size:1.55rem;font-weight:700;margin:0 0 2px}
+        .stat-box .lbl{font-size:.74rem;color:var(--muted)}
+        .charts-row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
+        .chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+        .chart-card h6{font-weight:700;font-size:.85rem;color:var(--text);margin:0 0 14px}
+        .chart-card canvas{max-height:210px}
+        .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+        .quick-btn{display:flex;align-items:center;gap:8px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none;font-size:.8rem;font-weight:500;transition:all .15s}
+        .quick-btn:hover{border-color:var(--accent);background:#f0f9f4;color:var(--accent)}
+        .quick-btn i{color:var(--accent);font-size:1rem}
+        .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1040}
+        .overlay.show{display:block}
+        @media(max-width:992px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.btn-menu{display:block}.stats-grid{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}.quick-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:576px){.content{padding:12px}.topbar{padding:10px 14px}.tb-title{font-size:.8rem}.tb-name{display:none}.welcome{padding:14px 16px}.welcome h5{font-size:.9rem}.stats-grid{gap:8px}.stat-box{padding:12px 10px}.stat-box h3{font-size:1.2rem}.stat-box .lbl{font-size:.68rem}.stat-box .si{width:32px;height:32px;font-size:.75rem}.chart-card{padding:12px}.chart-card canvas{max-height:170px}.quick-grid{gap:8px}.quick-btn{padding:10px;font-size:.74rem}}
+        @media(max-width:380px){.stats-grid{grid-template-columns:repeat(2,1fr);gap:6px}.stat-box{padding:10px 8px}.stat-box h3{font-size:1.1rem}}
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sb-logo"><img src="assets/img/logo.png" alt="PTPN I" onerror="this.style.display='none'"><div class="lt"><div class="sn">ptpn1</div><div class="rn">Regional 7</div></div></div>
+        <nav class="sb-nav">
+            <div class="nl">Menu Utama</div>
+            <a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="pages/karyawan.html"><i class="fas fa-users"></i> Data Karyawan</a>
+            <a href="pages/lokasi.html"><i class="fas fa-map-marker-alt"></i> Data Lokasi</a>
+            <a href="pages/risiko.html"><i class="fas fa-exclamation-triangle"></i> Data Risiko</a>
+            <div class="nl">Laporan</div>
+            <a href="pages/kejadian.html"><i class="fas fa-file-alt"></i> Laporan Kejadian</a>
+            <a href="pages/inspeksi.html"><i class="fas fa-clipboard-check"></i> Inspeksi K3</a>
+            <a href="pages/tindakan.html"><i class="fas fa-tools"></i> Tindakan Perbaikan</a>
+            <div class="nl">Lainnya</div>
+            <a href="pages/statistik.html"><i class="fas fa-chart-bar"></i> Statistik</a>
+            <a href="pages/pengguna.html" id="menuPengguna"><i class="fas fa-user-cog"></i> Manajemen Pengguna</a>
+            <a href="pages/pengaturan.html"><i class="fas fa-cog"></i> Pengaturan</a>
+            <a href="#" class="logout-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+        </nav>
+    </aside>
+    <main class="main">
+        <header class="topbar">
+            <div style="display:flex;align-items:center;gap:10px"><button class="btn-menu" id="btnMenu"><i class="fas fa-bars"></i></button><span class="tb-title">Dashboard</span></div>
+            <div class="tb-right">
+                <div class="notif-bell" id="notifBell"><i class="fas fa-bell"></i><span class="badge-count d-none" id="notifBadge">0</span></div>
+                <div class="notif-dropdown" id="notifDropdown"><div class="notif-header"><span>Notifikasi</span><small style="color:var(--accent);cursor:pointer" onclick="markAllRead()">Tandai semua dibaca</small></div><div id="notifList"><div class="notif-empty">Belum ada notifikasi</div></div></div>
+                <span class="tb-name" id="tbName">-</span><div class="tb-avatar" id="tbAvatar">U</div></div>
+        </header>
+        <div class="content">
+            <div class="welcome"><h5>Selamat Datang, <span id="wname">-</span></h5><p>Sistem Manajemen K3 — PTPN I Regional 7 Kebun Way Berulu</p></div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="si c1"><i class="fas fa-users"></i></div><h3 id="sKaryawan">0</h3><div class="lbl">Karyawan</div></div>
+                <div class="stat-box"><div class="si c2"><i class="fas fa-exclamation-triangle"></i></div><h3 id="sRisiko">0</h3><div class="lbl">Risiko Terdata</div></div>
+                <div class="stat-box"><div class="si c3"><i class="fas fa-file-alt"></i></div><h3 id="sKejadian">0</h3><div class="lbl">Laporan Kejadian</div></div>
+                <div class="stat-box"><div class="si c4"><i class="fas fa-clipboard-check"></i></div><h3 id="sInspeksi">0</h3><div class="lbl">Inspeksi Bulan Ini</div></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="si c3"><i class="fas fa-arrow-up"></i></div><h3 id="sRTinggi">0</h3><div class="lbl">Risiko Tinggi</div></div>
+                <div class="stat-box"><div class="si c5"><i class="fas fa-minus"></i></div><h3 id="sRSedang">0</h3><div class="lbl">Risiko Sedang</div></div>
+                <div class="stat-box"><div class="si c4"><i class="fas fa-arrow-down"></i></div><h3 id="sRRendah">0</h3><div class="lbl">Risiko Rendah</div></div>
+                <div class="stat-box"><div class="si c6"><i class="fas fa-tools"></i></div><h3 id="sTAktif">0</h3><div class="lbl">Tindakan Aktif</div></div>
+            </div>
+            <div class="charts-row">
+                <div class="chart-card"><h6>Trend Kejadian</h6><canvas id="chartTrend"></canvas></div>
+                <div class="chart-card"><h6>Tingkat Risiko</h6><canvas id="chartRisk"></canvas></div>
+            </div>
+            <div class="charts-row">
+                <div class="chart-card"><h6>Status Laporan</h6><canvas id="chartStatus"></canvas></div>
+                <div class="chart-card"><h6>Lokasi Kejadian</h6><canvas id="chartLokasi"></canvas></div>
+            </div>
+            <div class="chart-card" style="margin-bottom:0">
+                <h6>Akses Cepat</h6>
+                <div class="quick-grid">
+                    <a href="pages/kejadian.html" class="quick-btn"><i class="fas fa-plus-circle"></i> Laporan Baru</a>
+                    <a href="pages/inspeksi.html" class="quick-btn"><i class="fas fa-search"></i> Inspeksi Baru</a>
+                    <a href="pages/risiko.html" class="quick-btn"><i class="fas fa-exclamation-circle"></i> Risiko</a>
+                    <a href="pages/tindakan.html" class="quick-btn"><i class="fas fa-wrench"></i> Perbaikan</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="supabase/config.js"></script>
+    <script src="assets/js/seed-data.js"></script>
+    <script src="assets/js/supabase.js"></script>
+    <script src="assets/js/notif.js"></script>
+    <script>
+    // ========== AUTH GUARD ==========
+    var currentUser = null;
+    try { currentUser = JSON.parse(localStorage.getItem('smk3_currentUser')); } catch(e) {}
+    if (!currentUser) { window.location.href = 'login.html'; }
+
+    // ========== UI SETUP ==========
+    document.getElementById('wname').textContent = currentUser.nama || currentUser.email;
+    document.getElementById('tbName').textContent = currentUser.nama || '';
+    document.getElementById('tbAvatar').textContent = (currentUser.nama || 'U').charAt(0).toUpperCase();
+    if (currentUser.foto_url) {
+        document.getElementById('tbAvatar').innerHTML = '<img src="'+currentUser.foto_url+'" alt="">';
+        document.getElementById('tbAvatar').style.background = 'none';
+    }
+    var EDIT_ROLES = ['super_admin', 'admin_kebun', 'admin'];
+    if (EDIT_ROLES.indexOf(currentUser.role) === -1) {
+        var mp = document.getElementById('menuPengguna');
+        if (mp) mp.style.display = 'none';
+    }
+
+    // ========== MOBILE MENU ==========
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('overlay');
+    document.getElementById('btnMenu').onclick = function() {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    };
+    overlay.onclick = function() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    };
+    sidebar.querySelectorAll('a').forEach(function(a) {
+        a.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        });
+    });
+
+    // ========== LOGOUT ==========
+    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Keluar?',
+            text: 'Anda akan keluar dari sistem.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#1a3c34',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'Ya, Keluar',
+            cancelButtonText: 'Batal'
+        }).then(function(result) {
+            if (!result.isConfirmed) return;
+            localStorage.removeItem('smk3_currentUser');
+            window.location.href = 'login.html';
+        });
+    });
+
+    // ========== DASHBOARD DATA (REAL-TIME) ==========
+    function loadDashboard() {
+        Promise.all([
+            dbService.getCollection('karyawan'),
+            dbService.getCollection('risiko'),
+            dbService.getCollection('kejadian'),
+            dbService.getCollection('inspeksi'),
+            dbService.getCollection('tindakan')
+        ]).then(function(results) {
+            var karyawan = results[0] || [];
+            var risiko   = results[1] || [];
+            var kejadian = results[2] || [];
+            var inspeksi = results[3] || [];
+            var tindakan = results[4] || [];
+
+            // Stat counters
+            document.getElementById('sKaryawan').textContent = karyawan.length;
+            document.getElementById('sRisiko').textContent = risiko.length;
+            document.getElementById('sKejadian').textContent = kejadian.length;
+
+            var now = new Date();
+            var insBulanIni = inspeksi.filter(function(i) {
+                if (!i.tanggal) return false;
+                var d = new Date(i.tanggal);
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            });
+            document.getElementById('sInspeksi').textContent = insBulanIni.length;
+
+            var rTinggi = 0, rSedang = 0, rRendah = 0;
+            risiko.forEach(function(r) {
+                var t = (r.tingkat || '').toLowerCase();
+                if (t === 'tinggi') rTinggi++;
+                else if (t === 'sedang') rSedang++;
+                else if (t === 'rendah') rRendah++;
+            });
+            document.getElementById('sRTinggi').textContent = rTinggi;
+            document.getElementById('sRSedang').textContent = rSedang;
+            document.getElementById('sRRendah').textContent = rRendah;
+            document.getElementById('sTAktif').textContent = tindakan.filter(function(t) { return t.status !== 'Closed'; }).length;
+
+            // ========== CHARTS ==========
+            var months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+            var perBulan = new Array(12).fill(0);
+            kejadian.forEach(function(k) {
+                if (!k.tanggal) return;
+                var d = new Date(k.tanggal);
+                if (d.getFullYear() === now.getFullYear()) perBulan[d.getMonth()]++;
+            });
+
+            var tx = '#64748b', gd = '#e2e8f0', tk = '#94a3b8';
+
+            // Trend Chart
+            var ctx1 = document.getElementById('chartTrend').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: { labels: months, datasets: [{ data: perBulan, borderColor: '#1a3c34', backgroundColor: 'rgba(26,60,52,0.06)', fill: true, tension: 0.3, pointRadius: 3, pointBackgroundColor: '#1a3c34' }] },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: tk, font: { size: 9 } }, grid: { color: gd } }, y: { beginAtZero: true, ticks: { color: tk, font: { size: 9 } }, grid: { color: gd } } } }
+            });
+
+            // Risk Doughnut
+            var ctx2 = document.getElementById('chartRisk').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: { labels: ['Tinggi', 'Sedang', 'Rendah'], datasets: [{ data: [rTinggi, rSedang, rRendah], backgroundColor: ['#dc2626', '#d97706', '#2a9d42'] }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: tx, font: { size: 10 } } } } }
+            });
+
+            // Status Bar
+            var sOpen = kejadian.filter(function(k) { return k.status === 'Open'; }).length;
+            var sProg = kejadian.filter(function(k) { return k.status === 'In Progress'; }).length;
+            var sClosed = kejadian.filter(function(k) { return k.status === 'Closed'; }).length;
+            var ctx3 = document.getElementById('chartStatus').getContext('2d');
+            new Chart(ctx3, {
+                type: 'bar',
+                data: { labels: ['Open', 'In Progress', 'Closed'], datasets: [{ data: [sOpen, sProg, sClosed], backgroundColor: ['#2563a0', '#d97706', '#2a9d42'] }] },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: tk, font: { size: 9 } }, grid: { display: false } }, y: { beginAtZero: true, ticks: { color: tk, font: { size: 9 } }, grid: { color: gd } } } }
+            });
+
+            // Location Horizontal Bar
+            var locMap = {};
+            kejadian.forEach(function(k) { locMap[k.lokasi] = (locMap[k.lokasi] || 0) + 1; });
+            var locKeys = Object.keys(locMap).slice(0, 6);
+            var ctx4 = document.getElementById('chartLokasi').getContext('2d');
+            new Chart(ctx4, {
+                type: 'bar',
+                data: { labels: locKeys.length ? locKeys : ['-'], datasets: [{ data: locKeys.map(function(l) { return locMap[l]; }), backgroundColor: '#1a3c34' }] },
+                options: { responsive: true, maintainAspectRatio: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { color: tk, font: { size: 9 } }, grid: { color: gd } }, y: { ticks: { color: tk, font: { size: 9 } }, grid: { display: false } } } }
+            });
+
+        }).catch(function(err) {
+            console.error('Dashboard load error:', err);
+        });
+    }
+
+    loadDashboard();
+    </script>
+</body>
+</html>

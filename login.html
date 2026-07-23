@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — SMK3 PTPN I Regional 7</title>
+    <link rel="icon" type="image/png" href="assets/img/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root{--green:#2a9d42;--orange:#e07b28;--blue:#2563a0;--bg:#f5f6fa;--card:#ffffff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--accent:#1a3c34}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+        body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 10% 20%,rgba(42,157,66,.04) 0%,transparent 50%),radial-gradient(circle at 90% 80%,rgba(37,99,160,.04) 0%,transparent 50%),radial-gradient(circle at 50% 50%,rgba(224,123,40,.03) 0%,transparent 50%);pointer-events:none;z-index:0}
+        .login-wrapper{position:relative;z-index:1;width:100%;max-width:960px;display:flex;background:var(--card);border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.04)}
+        .login-left{flex:0 0 48%;background:var(--accent);padding:56px 44px;display:flex;flex-direction:column;justify-content:center;color:#fff;position:relative;overflow:hidden}
+        .login-left::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.03)}
+        .login-left .logo-area{display:flex;align-items:center;gap:16px;margin-bottom:40px;background:rgba(255,255,255,.08);border-radius:14px;padding:16px 18px}
+        .login-left .logo-area img{width:64px;height:64px;object-fit:contain;flex-shrink:0;background:#fff;border-radius:12px;padding:6px}
+        .login-left .logo-area .lt{line-height:1.2}
+        .login-left .logo-area .lt .subname{font-size:.9rem;color:rgba(255,255,255,.6);font-weight:500}
+        .login-left .logo-area .lt .regname{font-size:1.35rem;color:#fff;font-weight:700}
+        .login-left h1{font-size:1.6rem;font-weight:700;margin:0 0 10px;letter-spacing:-.01em}
+        .login-left .desc{font-size:.95rem;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:40px}
+        .login-left .features{display:flex;flex-direction:column;gap:14px}
+        .login-left .features .feat{display:flex;align-items:flex-start;gap:10px;font-size:.85rem;color:rgba(255,255,255,.7)}
+        .login-left .features .feat i{color:#43e97b;margin-top:2px;font-size:.75rem}
+        .login-right{flex:0 0 52%;padding:56px 48px;display:flex;flex-direction:column;justify-content:center}
+        .login-right h2{font-size:1.45rem;font-weight:700;color:var(--text);margin:0 0 4px}
+        .login-right .hint{font-size:.875rem;color:var(--muted);margin-bottom:36px}
+        .field{margin-bottom:18px}
+        .field label{display:block;font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:6px}
+        .field .input-wrap{position:relative}
+        .field .input-wrap input{width:100%;padding:12px 14px 12px 42px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.9375rem;outline:none;transition:border-color .2s,box-shadow .2s}
+        .field .input-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,60,52,.08)}
+        .field .input-wrap input::placeholder{color:#94a3b8}
+        .field .input-wrap .ficon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.95rem;pointer-events:none}
+        .field .input-wrap .toggle-pw{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#94a3b8;cursor:pointer;font-size:.95rem;padding:4px}
+        .field .input-wrap .toggle-pw:hover{color:var(--accent)}
+        .btn-login{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s,transform .1s;margin-top:8px;letter-spacing:.01em}
+        .btn-login:hover{background:#1f4f43}
+        .btn-login:active{transform:scale(.985)}
+        .btn-login:disabled{opacity:.55;cursor:not-allowed;transform:none}
+        .alert-box{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:11px 14px;font-size:.8125rem;color:#dc2626;margin-bottom:20px;display:none}
+        .alert-box.show{display:block}
+        .alert-box i{margin-right:6px}
+        .login-footer{margin-top:32px;text-align:center;font-size:.75rem;color:#94a3b8}
+        @media(max-width:768px){.login-wrapper{flex-direction:column;max-width:440px;border-radius:16px}.login-left{flex:none;padding:32px 28px}.login-left .logo-area{padding:12px 14px;margin-bottom:28px}.login-left .logo-area img{width:48px;height:48px}.login-left .logo-area .lt .regname{font-size:1.15rem}.login-left h1{font-size:1.3rem}.login-left .features{display:none}.login-right{flex:none;padding:32px 28px}.login-right h2{font-size:1.2rem}}
+        @media(max-width:400px){body{padding:10px;align-items:flex-start;padding-top:20px}.login-left{padding:24px 18px}.login-left .desc{font-size:.82rem;margin-bottom:20px}.login-right{padding:24px 18px}.field .input-wrap input{padding:11px 12px 11px 36px;font-size:.85rem}.btn-login{padding:11px;font-size:.875rem}}
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+<div class="login-left">
+<div class="logo-area"><img src="assets/img/logo.png" alt="PTPN I Regional 7" onerror="this.style.display='none'"><div class="lt"><div class="subname">ptpn1</div><div class="regname">Regional 7</div></div></div>
+<h1>Sistem Manajemen K3</h1>
+<p class="desc">Aplikasi terintegrasi untuk monitoring Keselamatan &amp; Kesehatan Kerja di lingkungan PTPN I Regional 7 Kebun Way Berulu.</p>
+<div class="features">
+<div class="feat"><i class="fas fa-check-circle"></i> Manajemen risiko &amp; inspeksi K3</div>
+<div class="feat"><i class="fas fa-check-circle"></i> Pelaporan kejadian &amp; tindakan perbaikan</div>
+<div class="feat"><i class="fas fa-check-circle"></i> Dashboard &amp; statistik real-time</div>
+</div>
+</div>
+<div class="login-right">
+<h2>Masuk ke Sistem</h2>
+<p class="hint">Silakan login menggunakan akun Anda.</p>
+<div class="alert-box" id="alertBox"><i class="fas fa-exclamation-circle"></i><span id="alertMsg"></span></div>
+<form id="loginForm" autocomplete="off">
+<div class="field"><label for="email">Email</label><div class="input-wrap"><i class="fas fa-envelope ficon"></i><input type="email" id="email" placeholder="nama@ptpn1.co.id" required></div></div>
+<div class="field"><label for="password">Kata Sandi</label><div class="input-wrap"><i class="fas fa-lock ficon"></i><input type="password" id="password" placeholder="••••••••" required><i class="fas fa-eye-slash toggle-pw" id="togglePw" title="Tampilkan sandi"></i></div></div>
+<button type="submit" class="btn-login" id="btnLogin"><i class="fas fa-arrow-right-to-bracket me-2"></i>Masuk</button>
+</form>
+<div class="login-footer">&copy; 2026 PTPN I — Regional 7 Kebun Way Berulu</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase/config.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script>
+(function(){"use strict";
+var cfg=window.SMK3_SUPABASE_CONFIG||{};
+var supabaseClient=null;
+if(cfg.url&&cfg.anonKey&&window.supabase){try{supabaseClient=window.supabase.createClient(cfg.url,cfg.anonKey)}catch(e){console.warn('Supabase init failed:',e.message);supabaseClient=null}}
+
+// TOGGLE PASSWORD — fa-eye-slash = tersembunyi, fa-eye = terlihat
+document.getElementById('togglePw').addEventListener('click',function(){
+var pw=document.getElementById('password');
+var isPass=pw.type==='password';
+pw.type=isPass?'text':'password';
+this.className='fas '+(isPass?'fa-eye':'fa-eye-slash')+' toggle-pw';
+this.title=isPass?'Sembunyikan sandi':'Tampilkan sandi';
+});
+
+var alertBox=document.getElementById('alertBox'),alertMsg=document.getElementById('alertMsg');
+function hideAlert(){alertBox.classList.remove('show')}
+function showError(msg){alertMsg.textContent=msg;alertBox.classList.add('show')}
+document.getElementById('email').addEventListener('input',hideAlert);
+document.getElementById('password').addEventListener('input',hideAlert);
+
+function setLoading(v){var b=document.getElementById('btnLogin');b.disabled=v;b.innerHTML=v?'<span class="spinner-border spinner-border-sm me-2"></span>Memproses...':'<i class="fas fa-arrow-right-to-bracket me-2"></i>Masuk'}
+
+function doLoginLS(email,pw){
+var users=[];try{users=JSON.parse(localStorage.getItem('smk3_users'))||[]}catch(e){users=[]}
+var found=users.find(function(u){return u.email===email&&u.password===pw});
+if(!found){setLoading(false);showError('Email atau kata sandi salah.');return}
+if(found.status&&found.status!=='Aktif'){setLoading(false);showError('Akun tidak aktif. Hubungi administrator.');return}
+var session={};
+for(var key in found){if(found.hasOwnProperty(key)&&key!=='password')session[key]=found[key]}
+session.loginTime=new Date().toISOString();
+localStorage.setItem('smk3_currentUser',JSON.stringify(session));
+window.location.href='dashboard.html';
+}
+
+function doLoginSB(email,pw){
+supabaseClient.auth.signInWithPassword({email:email,password:pw}).then(function(res){
+if(res.error){
+var msg=res.error.message.toLowerCase();
+if(msg.indexOf('not confirmed')!==-1||msg.indexOf('email not confirmed')!==-1){setLoading(false);showError('Email belum dikonfirmasi.');return}
+doLoginLS(email,pw);return;
+}
+return supabaseClient.from('users').select('*').eq('id',res.data.user.id).single().then(function(pr){
+var profile=pr.data;
+if(pr.error||!profile){supabaseClient.auth.signOut().catch(function(){});doLoginLS(email,pw);return}
+if(profile.status&&profile.status!=='Aktif'){supabaseClient.auth.signOut().catch(function(){});setLoading(false);showError('Akun tidak aktif.');return}
+localStorage.setItem('smk3_currentUser',JSON.stringify(profile));
+window.location.href='dashboard.html';
+});
+}).catch(function(err){console.warn('Supabase error:',err);doLoginLS(email,pw)});
+}
+
+document.getElementById('loginForm').addEventListener('submit',function(e){
+e.preventDefault();
+var email=document.getElementById('email').value.trim();
+var pw=document.getElementById('password').value;
+if(!email||!pw){showError('Email dan password wajib diisi.');return}
+setLoading(true);hideAlert();
+if(supabaseClient){doLoginSB(email,pw)}else{doLoginLS(email,pw)}
+});
+})();
+</script>
+</body>
+</html>
